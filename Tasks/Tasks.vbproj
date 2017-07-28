@@ -6,13 +6,28 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{B57196C9-A194-429F-BE56-A7D381D343E7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>Tasks.My.MyApplication</StartupObject>
-    <RootNamespace>Tasks</RootNamespace>
-    <AssemblyName>Tasks</AssemblyName>
+    <StartupObject>ITasks.My.MyApplication</StartupObject>
+    <RootNamespace>ITasks</RootNamespace>
+    <AssemblyName>ITasks</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -21,7 +36,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>Tasks.xml</DocumentationFile>
+    <DocumentationFile>ITasks.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,7 +46,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>Tasks.xml</DocumentationFile>
+    <DocumentationFile>ITasks.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -47,6 +62,19 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="InveritasDB">
+      <HintPath>..\..\InveritasDB\InveritasDB\bin\Release\InveritasDB.dll</HintPath>
+    </Reference>
+    <Reference Include="msgUC">
+      <HintPath>..\..\InversionERP\InversionERP\lib\msgUC.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Oracle.ManagedDataAccess.12.2.1100\lib\net40\Oracle.ManagedDataAccess.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -57,6 +85,8 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -72,11 +102,10 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.vb">
-      <SubType>Form</SubType>
+    <Compile Include="EditboxForm.Designer.vb">
+      <DependentUpon>EditboxForm.vb</DependentUpon>
     </Compile>
-    <Compile Include="Form1.Designer.vb">
-      <DependentUpon>Form1.vb</DependentUpon>
+    <Compile Include="EditboxForm.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -94,13 +123,40 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="NTree.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TaskItem.Designer.vb">
+      <DependentUpon>TaskItem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="TaskItem.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Tasks.Designer.vb">
+      <DependentUpon>Tasks.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="taskslistpanel.Designer.vb">
+      <DependentUpon>taskslistpanel.vb</DependentUpon>
+    </Compile>
+    <Compile Include="taskslistpanel.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="EditboxForm.resx">
+      <DependentUpon>EditboxForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tasks.resx">
+      <DependentUpon>Tasks.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +170,85 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paper.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\att2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\att16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\att.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\btn_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\no.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cib.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\novobank.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pgb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\vita.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\inv.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\list_16xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Hammer_Builder_32xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrow_Next_16xLG_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Hammer_Builder_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\book_Open_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action_add_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\action_add_16xMD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\document_32xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StatusAnnotations_Play_32xLG_color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\save_16xLG.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\magnifier_16xLG.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
