@@ -4,9 +4,9 @@ Imports InveritasDB
 Imports InveritasDB.StoredProcedures
 
 Public Class Tasks
-    Dim entity As Entities
+    Public Shared entity As Entities
     Dim conn As Connect
-    ' Перетаскивание формы begin
+#Region "Перетаскивание формы"
     Dim newPoint As New Point()
     Dim WithEvents tb As New TextBox
     Dim editCtrl As Control
@@ -25,14 +25,14 @@ Public Class Tasks
             Location = newPoint
         End If
     End Sub
-    ' Перетаскивание формы end
+#End Region
 
     Dim val As Integer
     Dim txt As String
-
-    Dim IEnum As IEnumerable(Of DataRow)
+    Dim inFill As Boolean = False
+    'Dim IEnum As IEnumerable(Of DataRow)
     'Dim uitab As IQueryable(Of UI_TASKS)
-
+    Dim TaskRow As ALLTASKS
     Dim tasks As DataTable
     Dim ds As DataSet
     Dim cnt As Integer
@@ -40,7 +40,7 @@ Public Class Tasks
     Dim tiLocation As New Point(0, 0)
     'Dim miLast As MailItem
     Dim miY As Integer
-
+    Dim binder As New DataBinder()
     Dim dsTasks As New DataSet
     Dim daTasks As New OracleDataAdapter
     Dim index As Integer = 0
@@ -48,55 +48,55 @@ Public Class Tasks
     Dim msgs As New msgUC.msgArea ' Почта
 
     Public Sub New()
-        InitializeComponent()
-
         conn = New Connect
         conn.ShowDialog()
         entity = Adapter.entity
+        If entity Is Nothing Then
+            Environment.Exit(0)
+        Else
+            InitializeComponent()
+            Dim eh As New ElementHost
+            eh.Dock = DockStyle.Fill
+            Post.Controls.Add(eh)
+            eh.Child = msgs
 
-        Dim eh As New ElementHost
-        eh.Dock = DockStyle.Fill
-        Post.Controls.Add(eh)
-        eh.Child = msgs
+            dsTasks.Tables.Add("tasks")
 
-        dsTasks.Tables.Add("tasks")
+            clearDetails()
+            miY = Post.Size.Height
+            'uitab = Populate("select ord, col from ui_tasks where login = user order by ord")
 
-        clearDetails()
-        miY = Post.Size.Height
-        'uitab = Populate("select ord, col from ui_tasks where login = user order by ord")
+            'uitab = IEnum.CopyToDataTable()
+            ds = New DataSet
+            Dim dr As OracleDataAdapter
+            'cnt = psf("task.getGrpCnt") ' Получим число группировок пользователя
+            cnt = TASK.GETGRPCNT()
 
+            'Dim params As New Dictionary(Of String, String)
+            For i = 0 To cnt - 1
+                'params.Clear()
+                'params.Add("i", i)
+                'dr = New OracleDataAdapter(psf("task.getSQL", params), HomeForm.conn)
+                dr = New OracleDataAdapter(TASK.GETSQL(i), StoredProc.conn)
+                'MsgBox("Command = " & dr.SelectCommand.CommandText)
+                dr.Fill(ds, "t" & i)
+                If i > 0 Then
+                    Dim pc(i - 1) As DataColumn ' Массив родителей
+                    Dim cc(i - 1) As DataColumn ' Массив детей
+                    For j = 1 To i
+                        pc(j - 1) = ds.Tables("t" & (i - 1)).Columns(j - 1)
+                        cc(j - 1) = ds.Tables("t" & i).Columns(j - 1)
+                    Next
+                    Dim rel As New DataRelation("rel" & i, pc, cc)
+                    ds.Relations.Add(rel)
+                End If
+            Next
+            fnt = New Font("Segoe UI", 10)
+            aggTree.Nodes.Clear()
+            fillChild()
+            taskState.ContextMenuStrip = StateMenu
+        End If
 
-
-
-        'uitab = IEnum.CopyToDataTable()
-        ds = New DataSet
-        Dim dr As OracleDataAdapter
-        'cnt = psf("task.getGrpCnt") ' Получим число группировок пользователя
-        cnt = TASK.GETGRPCNT()
-
-        'Dim params As New Dictionary(Of String, String)
-        For i = 0 To cnt - 1
-            'params.Clear()
-            'params.Add("i", i)
-            'dr = New OracleDataAdapter(psf("task.getSQL", params), HomeForm.conn)
-            dr = New OracleDataAdapter(TASK.GETSQL(i), StoredProc.conn)
-            'MsgBox("Command = " & dr.SelectCommand.CommandText)
-            dr.Fill(ds, "t" & i)
-            If i > 0 Then
-                Dim pc(i - 1) As DataColumn ' Массив родителей
-                Dim cc(i - 1) As DataColumn ' Массив детей
-                For j = 1 To i
-                    pc(j - 1) = ds.Tables("t" & (i - 1)).Columns(j - 1)
-                    cc(j - 1) = ds.Tables("t" & i).Columns(j - 1)
-                Next
-                Dim rel As New DataRelation("rel" & i, pc, cc)
-                ds.Relations.Add(rel)
-            End If
-        Next
-        fnt = New Font("Segoe UI", 10)
-        aggTree.Nodes.Clear()
-        fillChild()
-        taskState.ContextMenuStrip = StateMenu
     End Sub
 
     Sub fillChild(Optional ByVal i As Integer = 0, Optional ByRef nodes As TreeNodeCollection = Nothing, Optional ByRef pRow As DataRow = Nothing)
@@ -272,9 +272,11 @@ Public Class Tasks
 
     Sub getDetails()
         If tasksPanel.SelectedItem IsNot Nothing Then
+            inFill = True
             'Dim dt As New DataTable
             'dt = Populate("select * from V_TASKS_DETAILS where at_id=" & tasksPanel.SelectedItem.id)
-            Dim td = (From c In entity.V_TASKS_DETAILS Where c.AT_ID = tasksPanel.SelectedItem.id Select c).First
+
+            TaskRow = (From c In entity.ALLTASKS Where c.AT_ID = tasksPanel.SelectedItem.id Select c).First
             'dt = IEnum.CopyToDataTable()
             clearDetails()
             'taskDate.Text = dt.Rows(0)(0)
@@ -288,18 +290,28 @@ Public Class Tasks
             'taskProduct.Text = dt.Rows(0)(8)
             'taskBlock.Text = dt.Rows(0)(9)
             'Customer.Image = getLogo(dt.Rows(0)(11))
-            taskDate.Text = td.TDATE
-            taskCustomer.Text = td.CLIENT
-            taskHeader.Text = td.SUBJECT
-            taskState.Text = td.STATE
-            taskText.Text = td.NOTES
-            taskManager.Text = td.EMP
-            taskType.Text = td.TTYPE
-            taskProject.Text = td.TPROJ
-            taskProduct.Text = td.TPROD
-            taskBlock.Text = td.TBLOCK
-            Customer.Image = getLogo(td.CUSID)
-
+            taskDate.Text = TaskRow.DATE_
+            taskCustomer.Text = PERSON.GETPERSONNAME(TaskRow.SUPPLICANT, 0) & " " & COMPANY.GETNAME(TaskRow.CLIENT)
+            taskCustomer.Tag = TaskRow.SUPPLICANT
+            taskState.Text = IIf(TaskRow.COMPLETED = 1, "Задача выполнена", "Задача не выполнена")
+            taskState.Tag = TaskRow.COMPLETED
+            taskHeader.Text = TaskRow.NAME
+            taskText.Text = TaskRow.TEXT
+            taskManager.Text = PERSON.GETPERSONNAME(TaskRow.EMPLOYEE, 0)
+            taskManager.Tag = TaskRow.EMPLOYEE
+            taskType.Text = TASK.GETTYPE(TaskRow.SRC)
+            taskType.Tag = TaskRow.SRC
+            taskProject.Text = PROJECT.GETNAME(TaskRow.PROJECT)
+            taskProject.Tag = TaskRow.PROJECT
+            taskProduct.Text = PRODUCT.GETNAME(PRODUCT.GETPRODBYBLOCK(TaskRow.BLOCK))
+            taskProduct.Tag = PRODUCT.GETPRODBYBLOCK(TaskRow.BLOCK)
+            taskBlock.Text = PRODUCT.GETBLOCKNAME(TaskRow.BLOCK)
+            taskBlock.Tag = TaskRow.BLOCK
+            Customer.Image = getLogo(TaskRow.CLIENT)
+            'binder.addControl(taskHeader, td.SUBJECT)
+            'TaskRow.NAME = "uoehwfioehwfuhweuifhiuhwfheuiw"
+            'entity.SaveChanges()
+            inFill = False
         End If
     End Sub
 
@@ -341,6 +353,7 @@ Public Class Tasks
         If e.KeyCode = Keys.Enter Then
             editCtrl.Text = DateTimePicker1.Text
             DateTimePicker1.Visible = False
+            TaskRow.DATE_ = DateTimePicker1.Value
         ElseIf e.KeyCode = Keys.Escape Then
             DateTimePicker1.Visible = False
         End If
@@ -353,6 +366,7 @@ Public Class Tasks
         If Not edit.Cancel Then
             taskCustomer.Text = edit.Value
             taskCustomer.Tag = edit.Key
+            TaskRow.SUPPLICANT = edit.Key
         End If
     End Sub
 
@@ -362,6 +376,7 @@ Public Class Tasks
         If Not edit.Cancel Then
             taskCustomer.Text = edit.Value
             taskCustomer.Tag = edit.Key
+            TaskRow.SUPPLICANT = edit.Key
         End If
     End Sub
 
@@ -374,11 +389,14 @@ Public Class Tasks
         tb.Size = editCtrl.Size
         tb.Visible = True
         Me.ActiveControl = tb
+
+
     End Sub
 
     Private Sub tb_KeyDown(sender As Object, e As KeyEventArgs) Handles tb.KeyDown
         If e.KeyCode = Keys.Enter Then
             editCtrl.Text = tb.Text
+            TaskRow.NAME = taskHeader.Text
             tb.Visible = False
         ElseIf e.KeyCode = Keys.Escape Then
             tb.Visible = False
@@ -391,10 +409,12 @@ Public Class Tasks
         If Not edit.Cancel Then
             taskManager.Text = edit.Value
             taskManager.Tag = edit.Key
+            TaskRow.EMPLOYEE = edit.Key
         End If
     End Sub
 
     Private Sub taskState_Click(sender As Object, e As EventArgs) Handles taskState.Click
+
         tasksPanel.SelectedItem.setStatus()
     End Sub
 
@@ -424,5 +444,33 @@ Public Class Tasks
         'DateTimePicker1.Value = DateTime.Parse(taskDate.Text)
         DateTimePicker1.Visible = True
         Me.ActiveControl = DateTimePicker1
+    End Sub
+
+    Private Sub taskHeader_TextChanged(sender As Object, e As EventArgs) Handles taskHeader.TextChanged
+        '    If TaskRow IsNot Nothing Then
+
+        '        TaskRow.NAME = taskHeader.Text
+        '        'entity.ALLTASKS.Attach(TaskRow)
+        '        'Dim entry = entity.Entry(TaskRow)
+        '        ''entry.Property(e >= e.).IsModified = True
+        '        'entry.Property("NAME").IsModified = Tr
+        '        entity.SaveChanges()
+        '    End If
+    End Sub
+
+    Private Sub SavetoDB_Click(sender As Object, e As EventArgs) Handles SavetoDB.Click
+        entity.SaveChanges()
+    End Sub
+
+    Public Shared Sub setState(ByVal id As Integer)
+        Dim cRow = (From c In entity.ALLTASKS Where c.AT_ID = id Select c).First()
+        cRow.COMPLETED = IIf(cRow.COMPLETED = 0, 1, 0)
+    End Sub
+
+    Private Sub taskText_TextChanged(sender As Object, e As EventArgs) Handles taskText.TextChanged
+        If Not inFill Then
+            TaskRow.TEXT = taskText.Text
+        End If
+
     End Sub
 End Class

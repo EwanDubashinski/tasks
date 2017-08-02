@@ -1,15 +1,13 @@
 ﻿Imports InveritasDB
-
+Imports System.Data.Objects.SqlClient
 Public Class EditboxForm
     Dim source As String
-    Dim ds As IEnumerable(Of SUPPLICANTS)
+    Dim ds As New List(Of SUPPLICANTS)
     'Dim IEnum As IEnumerable(Of DataRow)
     Dim val As Integer
     Dim txt As String
     Dim canc As Boolean = True
-    Dim entity As Entities
-
-
+    'Dim entity As Entities
 
     Public ReadOnly Property Cancel() As Boolean
         Get
@@ -38,7 +36,7 @@ Public Class EditboxForm
         asyncQuery()
         Me.ActiveControl = TextBox1
         Me.Location = New Point(Cursor.Position.X, Cursor.Position.Y)
-        entity = Adapter.entity
+
     End Sub
 
     Private Function GetAbsolutePosition(ByVal ctrl As Control) As Point
@@ -59,9 +57,9 @@ Public Class EditboxForm
     Sub asyncQuery(Optional ByVal template As String = Nothing)
         If template Is Nothing Then
             'ds = Populate("select * from supplicants where rownum < 10")
-            ds = (From c In entity.SUPPLICANTS Select c).Take(10)
+            ds = (From c In Tasks.entity.SUPPLICANTS Select c).Take(10).ToList()
         Else
-            template = "*" & template & "*"
+            'template = "*" & template & "*"
             ' TODO: добавить поиск по ID и сделать поиск по нескольким словам через split с приоритетом максимального совпадения
             'ds = Populate("select * 
             '                 from supplicants
@@ -69,9 +67,10 @@ Public Class EditboxForm
             '                  and (upper(SUP) like '%" & template.ToUpper & "%'
             '                    or to_char(p_id) like '%" & template.ToUpper & "%'
             '                    or to_char(c_id) like '%" & template.ToUpper & "%')")
-            ds = (From c In entity.SUPPLICANTS Where c.SUP.ToUpper Like template.ToUpper Or
-                                                   c.C_ID.ToString Like template Or
-                                                   c.P_ID.ToString Like template Select c).Take(10)
+            ds = (From c In Tasks.entity.SUPPLICANTS Where (c.SUP.ToUpper.Contains(template.ToUpper)) Select c).Take(10).ToList() ' Or
+            '(SqlFunctions.StringConvert(c.C_ID).Contains(template)) Or
+            '(SqlFunctions.StringConvert(c.P_ID).Contains(template)) Select c.SUP
+
         End If
         'ds = IEnum.CopyToDataTable()
 
@@ -86,7 +85,7 @@ Public Class EditboxForm
 
     Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.Click
         If ListBox1.SelectedItem IsNot Nothing Then
-            TextBox1.Text = CType(ListBox1.SelectedItem, DataRowView)(0)
+            TextBox1.Text = ListBox1.SelectedItem 'CType(ListBox1.SelectedItem, DataRowView)(0)
             val = ListBox1.SelectedValue
             txt = TextBox1.Text
             'result = res
@@ -120,7 +119,7 @@ Public Class EditboxForm
 
     Private Sub setParamsAndClose()
         If ListBox1.SelectedItem IsNot Nothing Then
-            TextBox1.Text = CType(ListBox1.SelectedItem, DataRowView)(0)
+            TextBox1.Text = CType(ListBox1.SelectedItem, SUPPLICANTS).SUP
             val = ListBox1.SelectedValue
             txt = TextBox1.Text
             canc = False

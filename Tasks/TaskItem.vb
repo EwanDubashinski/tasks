@@ -84,10 +84,12 @@
     End Sub
 
     Public Sub setStatus() Handles bt.Click
+
         'Dim tact As Devart.Data.Oracle.OracleTransaction = NonQuery("update alltasks set completed = " & IIf(active, "0", "1") & " where at_id=" & id, Nothing)
         'tact.Commit()
         active = Not active
         setStatus(active)
+        Tasks.setState(id)
     End Sub
 
     Sub setStatus(ByVal state As Boolean)

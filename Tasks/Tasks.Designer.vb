@@ -23,6 +23,7 @@ Partial Class Tasks
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Tasks))
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.aggTree = New ITasks.NTree()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
@@ -72,6 +73,8 @@ Partial Class Tasks
         Me.CancelTask = New System.Windows.Forms.ToolStripMenuItem()
         Me.SetTaskDeadline = New System.Windows.Forms.ToolStripMenuItem()
         Me.ChangeTaskCloseDate = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.SavetoDB = New System.Windows.Forms.ToolStripButton()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -88,6 +91,7 @@ Partial Class Tasks
         Me.Works.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.StateMenu.SuspendLayout()
+        Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'SplitContainer1
@@ -96,7 +100,7 @@ Partial Class Tasks
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SplitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.SplitContainer1.Location = New System.Drawing.Point(12, 12)
+        Me.SplitContainer1.Location = New System.Drawing.Point(12, 28)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -106,7 +110,7 @@ Partial Class Tasks
         'SplitContainer1.Panel2
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.SplitContainer2)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1130, 549)
+        Me.SplitContainer1.Size = New System.Drawing.Size(1130, 561)
         Me.SplitContainer1.SplitterDistance = 362
         Me.SplitContainer1.TabIndex = 8
         '
@@ -124,7 +128,7 @@ Partial Class Tasks
         Me.aggTree.Location = New System.Drawing.Point(3, 3)
         Me.aggTree.Name = "aggTree"
         Me.aggTree.ShowLines = False
-        Me.aggTree.Size = New System.Drawing.Size(354, 541)
+        Me.aggTree.Size = New System.Drawing.Size(354, 553)
         Me.aggTree.TabIndex = 3
         '
         'SplitContainer2
@@ -144,7 +148,7 @@ Partial Class Tasks
         'SplitContainer2.Panel2
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.Tab)
-        Me.SplitContainer2.Size = New System.Drawing.Size(764, 549)
+        Me.SplitContainer2.Size = New System.Drawing.Size(764, 561)
         Me.SplitContainer2.SplitterDistance = 363
         Me.SplitContainer2.TabIndex = 0
         '
@@ -363,7 +367,7 @@ Partial Class Tasks
         Me.tasksPanel.Location = New System.Drawing.Point(3, 3)
         Me.tasksPanel.Name = "tasksPanel"
         Me.tasksPanel.SelectedItem = Nothing
-        Me.tasksPanel.Size = New System.Drawing.Size(356, 541)
+        Me.tasksPanel.Size = New System.Drawing.Size(356, 553)
         Me.tasksPanel.TabIndex = 0
         '
         'Tab
@@ -380,7 +384,7 @@ Partial Class Tasks
         Me.Tab.Location = New System.Drawing.Point(3, 3)
         Me.Tab.Name = "Tab"
         Me.Tab.SelectedIndex = 0
-        Me.Tab.Size = New System.Drawing.Size(388, 541)
+        Me.Tab.Size = New System.Drawing.Size(388, 553)
         Me.Tab.SizeMode = System.Windows.Forms.TabSizeMode.Fixed
         Me.Tab.TabIndex = 0
         '
@@ -399,7 +403,7 @@ Partial Class Tasks
         Me.Description.Location = New System.Drawing.Point(4, 29)
         Me.Description.Name = "Description"
         Me.Description.Padding = New System.Windows.Forms.Padding(3)
-        Me.Description.Size = New System.Drawing.Size(380, 508)
+        Me.Description.Size = New System.Drawing.Size(380, 520)
         Me.Description.TabIndex = 0
         Me.Description.Text = "Описание"
         '
@@ -417,9 +421,9 @@ Partial Class Tasks
         '
         Me.getTask.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.getTask.Location = New System.Drawing.Point(274, 481)
+        Me.getTask.Location = New System.Drawing.Point(267, 493)
         Me.getTask.Name = "getTask"
-        Me.getTask.Size = New System.Drawing.Size(104, 26)
+        Me.getTask.Size = New System.Drawing.Size(111, 26)
         Me.getTask.TabIndex = 8
         Me.getTask.Text = "Назначить"
         Me.getTask.UseVisualStyleBackColor = True
@@ -433,7 +437,7 @@ Partial Class Tasks
         Me.taskText.Multiline = True
         Me.taskText.Name = "taskText"
         Me.taskText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.taskText.Size = New System.Drawing.Size(382, 360)
+        Me.taskText.Size = New System.Drawing.Size(378, 377)
         Me.taskText.TabIndex = 7
         '
         'taskManager
@@ -443,7 +447,7 @@ Partial Class Tasks
         Me.taskManager.AutoEllipsis = True
         Me.taskManager.AutoSize = True
         Me.taskManager.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.taskManager.Location = New System.Drawing.Point(6, 486)
+        Me.taskManager.Location = New System.Drawing.Point(6, 498)
         Me.taskManager.Name = "taskManager"
         Me.taskManager.Size = New System.Drawing.Size(262, 19)
         Me.taskManager.TabIndex = 6
@@ -456,7 +460,7 @@ Partial Class Tasks
         Me.taskState.AutoEllipsis = True
         Me.taskState.Location = New System.Drawing.Point(0, 74)
         Me.taskState.Name = "taskState"
-        Me.taskState.Size = New System.Drawing.Size(385, 30)
+        Me.taskState.Size = New System.Drawing.Size(381, 30)
         Me.taskState.TabIndex = 5
         Me.taskState.Text = "Необходимо выполнить до конца дня"
         Me.taskState.UseVisualStyleBackColor = True
@@ -481,7 +485,7 @@ Partial Class Tasks
         Me.taskHeader.ForeColor = System.Drawing.Color.White
         Me.taskHeader.Location = New System.Drawing.Point(0, 46)
         Me.taskHeader.Name = "taskHeader"
-        Me.taskHeader.Size = New System.Drawing.Size(382, 30)
+        Me.taskHeader.Size = New System.Drawing.Size(381, 30)
         Me.taskHeader.TabIndex = 2
         Me.taskHeader.Text = "Очень страшно обновляться! Все время ошибки!"
         '
@@ -493,7 +497,7 @@ Partial Class Tasks
         Me.taskCustomer.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.taskCustomer.Location = New System.Drawing.Point(53, 22)
         Me.taskCustomer.Name = "taskCustomer"
-        Me.taskCustomer.Size = New System.Drawing.Size(329, 19)
+        Me.taskCustomer.Size = New System.Drawing.Size(328, 19)
         Me.taskCustomer.TabIndex = 2
         Me.taskCustomer.Text = "Михаил Ключко, СитиИнвест Банк"
         '
@@ -505,7 +509,7 @@ Partial Class Tasks
         Me.taskDate.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.taskDate.Location = New System.Drawing.Point(54, 6)
         Me.taskDate.Name = "taskDate"
-        Me.taskDate.Size = New System.Drawing.Size(328, 19)
+        Me.taskDate.Size = New System.Drawing.Size(324, 19)
         Me.taskDate.TabIndex = 1
         Me.taskDate.Text = "Вторник, 10 июля 2016 15:30"
         '
@@ -516,7 +520,7 @@ Partial Class Tasks
         Me.Works.Location = New System.Drawing.Point(4, 29)
         Me.Works.Name = "Works"
         Me.Works.Padding = New System.Windows.Forms.Padding(3)
-        Me.Works.Size = New System.Drawing.Size(379, 506)
+        Me.Works.Size = New System.Drawing.Size(379, 518)
         Me.Works.TabIndex = 1
         Me.Works.Text = "Работы"
         Me.Works.UseVisualStyleBackColor = True
@@ -546,7 +550,7 @@ Partial Class Tasks
         Me.Post.AutoScroll = True
         Me.Post.Location = New System.Drawing.Point(4, 29)
         Me.Post.Name = "Post"
-        Me.Post.Size = New System.Drawing.Size(380, 508)
+        Me.Post.Size = New System.Drawing.Size(380, 520)
         Me.Post.TabIndex = 2
         Me.Post.Text = "Письма"
         Me.Post.UseVisualStyleBackColor = True
@@ -556,7 +560,7 @@ Partial Class Tasks
         Me.files.Location = New System.Drawing.Point(4, 29)
         Me.files.Name = "files"
         Me.files.Padding = New System.Windows.Forms.Padding(3)
-        Me.files.Size = New System.Drawing.Size(379, 506)
+        Me.files.Size = New System.Drawing.Size(379, 518)
         Me.files.TabIndex = 3
         Me.files.Text = "Файлы"
         Me.files.UseVisualStyleBackColor = True
@@ -565,7 +569,7 @@ Partial Class Tasks
         '
         Me.StatusStrip1.BackColor = System.Drawing.Color.LightSteelBlue
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.taskType, Me.taskProject, Me.taskProduct, Me.taskBlock})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 564)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 592)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1154, 22)
         Me.StatusStrip1.TabIndex = 12
@@ -643,16 +647,35 @@ Partial Class Tasks
         Me.ChangeTaskCloseDate.Size = New System.Drawing.Size(211, 22)
         Me.ChangeTaskCloseDate.Text = "Изменить дату закрытия"
         '
+        'ToolStrip1
+        '
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SavetoDB})
+        Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.ToolStrip1.Name = "ToolStrip1"
+        Me.ToolStrip1.Size = New System.Drawing.Size(1154, 25)
+        Me.ToolStrip1.TabIndex = 13
+        Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'SavetoDB
+        '
+        Me.SavetoDB.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.SavetoDB.Image = Global.ITasks.My.Resources.Resources.save_16xLG
+        Me.SavetoDB.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.SavetoDB.Name = "SavetoDB"
+        Me.SavetoDB.Size = New System.Drawing.Size(23, 22)
+        Me.SavetoDB.Text = "Save"
+        '
         'Tasks
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.LightSlateGray
-        Me.ClientSize = New System.Drawing.Size(1154, 586)
+        Me.ClientSize = New System.Drawing.Size(1154, 614)
+        Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.SplitContainer1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "Tasks"
-        Me.ShowInTaskbar = False
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
         Me.Text = "Задачи"
         Me.SplitContainer1.Panel1.ResumeLayout(False)
@@ -676,6 +699,8 @@ Partial Class Tasks
         Me.StatusStrip1.ResumeLayout(False)
         Me.StatusStrip1.PerformLayout()
         Me.StateMenu.ResumeLayout(False)
+        Me.ToolStrip1.ResumeLayout(False)
+        Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -729,4 +754,6 @@ Partial Class Tasks
     Friend WithEvents CancelTask As ToolStripMenuItem
     Friend WithEvents ChangeTaskCloseDate As ToolStripMenuItem
     Friend WithEvents OpenTask As ToolStripMenuItem
+    Friend WithEvents ToolStrip1 As ToolStrip
+    Friend WithEvents SavetoDB As ToolStripButton
 End Class
