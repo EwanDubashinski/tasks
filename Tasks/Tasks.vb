@@ -45,12 +45,13 @@ Public Class Tasks
     Dim daTasks As New OracleDataAdapter
     Dim index As Integer = 0
     Dim ti As TaskItem
-    Dim msgs As New msgUC.msgArea ' Почта
+    Dim WithEvents msgs As New msgUC.msgArea ' Почта
 
     Public Sub New()
         conn = New Connect
         conn.ShowDialog()
         entity = Adapter.entity
+
         If entity Is Nothing Then
             Environment.Exit(0)
         Else
@@ -65,38 +66,45 @@ Public Class Tasks
             clearDetails()
             miY = Post.Size.Height
             'uitab = Populate("select ord, col from ui_tasks where login = user order by ord")
-
             'uitab = IEnum.CopyToDataTable()
             ds = New DataSet
-            Dim dr As OracleDataAdapter
-            'cnt = psf("task.getGrpCnt") ' Получим число группировок пользователя
-            cnt = TASK.GETGRPCNT()
-
-            'Dim params As New Dictionary(Of String, String)
-            For i = 0 To cnt - 1
-                'params.Clear()
-                'params.Add("i", i)
-                'dr = New OracleDataAdapter(psf("task.getSQL", params), HomeForm.conn)
-                dr = New OracleDataAdapter(TASK.GETSQL(i), StoredProc.conn)
-                'MsgBox("Command = " & dr.SelectCommand.CommandText)
-                dr.Fill(ds, "t" & i)
-                If i > 0 Then
-                    Dim pc(i - 1) As DataColumn ' Массив родителей
-                    Dim cc(i - 1) As DataColumn ' Массив детей
-                    For j = 1 To i
-                        pc(j - 1) = ds.Tables("t" & (i - 1)).Columns(j - 1)
-                        cc(j - 1) = ds.Tables("t" & i).Columns(j - 1)
-                    Next
-                    Dim rel As New DataRelation("rel" & i, pc, cc)
-                    ds.Relations.Add(rel)
-                End If
-            Next
             fnt = New Font("Segoe UI", 10)
-            aggTree.Nodes.Clear()
-            fillChild()
             taskState.ContextMenuStrip = StateMenu
+            renewTree()
         End If
 
+    End Sub
+
+    Sub renewTree()
+        Dim dr As OracleDataAdapter
+        'cnt = psf("task.getGrpCnt") ' Получим число группировок пользователя
+        cnt = TASK.GETGRPCNT()
+        ds.Clear()
+        ds.Relations.Clear()
+        tasksPanel.SelectedItem = Nothing
+        tasksPanel.Controls.Clear()
+        clearDetails()
+        'Dim params As New Dictionary(Of String, String)
+        For i = 0 To cnt - 1
+            'params.Clear()
+            'params.Add("i", i)
+            'dr = New OracleDataAdapter(psf("task.getSQL", params), HomeForm.conn)
+            dr = New OracleDataAdapter(TASK.GETSQL(i), StoredProc.conn)
+            'MsgBox("Command = " & dr.SelectCommand.CommandText)
+            dr.Fill(ds, "t" & i)
+            If i > 0 Then
+                Dim pc(i - 1) As DataColumn ' Массив родителей
+                Dim cc(i - 1) As DataColumn ' Массив детей
+                For j = 1 To i
+                    pc(j - 1) = ds.Tables("t" & (i - 1)).Columns(j - 1)
+                    cc(j - 1) = ds.Tables("t" & i).Columns(j - 1)
+                Next
+                Dim rel As New DataRelation("rel" & i, pc, cc)
+                ds.Relations.Add(rel)
+            End If
+        Next
+        aggTree.Nodes.Clear()
+        fillChild()
     End Sub
 
     Sub fillChild(Optional ByVal i As Integer = 0, Optional ByRef nodes As TreeNodeCollection = Nothing, Optional ByRef pRow As DataRow = Nothing)
@@ -111,6 +119,7 @@ Public Class Tasks
         Else
             For Each cRow As DataRow In pRow.GetChildRows("rel" & i)
                 Dim n As TreeNode = nodes.Add(cRow(i), cRow(i + 1))
+
                 n.NodeFont = fnt
                 If i < cnt Then
                     fillChild(i + 1, n.Nodes, cRow)
@@ -290,7 +299,7 @@ Public Class Tasks
             'taskProduct.Text = dt.Rows(0)(8)
             'taskBlock.Text = dt.Rows(0)(9)
             'Customer.Image = getLogo(dt.Rows(0)(11))
-            taskDate.Text = TaskRow.DATE_
+            taskDate.Text = TaskRow.DATE_?.ToLongDateString
             taskCustomer.Text = PERSON.GETPERSONNAME(TaskRow.SUPPLICANT, 0) & " " & COMPANY.GETNAME(TaskRow.CLIENT)
             taskCustomer.Tag = TaskRow.SUPPLICANT
             taskState.Text = IIf(TaskRow.COMPLETED = 1, "Задача выполнена", "Задача не выполнена")
@@ -467,10 +476,70 @@ Public Class Tasks
         cRow.COMPLETED = IIf(cRow.COMPLETED = 0, 1, 0)
     End Sub
 
+    Public Shared Sub setCategory(ByVal id As Integer, ByVal cat As Integer)
+        Dim cRow = (From c In entity.ALLTASKS Where c.AT_ID = id Select c).First()
+        cRow.SRC = cat
+    End Sub
+
     Private Sub taskText_TextChanged(sender As Object, e As EventArgs) Handles taskText.TextChanged
         If Not inFill Then
             TaskRow.TEXT = taskText.Text
         End If
 
+    End Sub
+
+    Private Sub msgs_TextToTask(sender As Object, e As msgUC.TextToTaskEventArgs) Handles msgs.TextToTask
+        taskText.Text += Environment.NewLine
+        taskText.Text += e.Text
+    End Sub
+
+    Private Sub renew_Click(sender As Object, e As EventArgs) Handles renew.Click
+        renewTree()
+    End Sub
+
+    Private Sub SetHorizontal_Click(sender As Object, e As EventArgs) Handles SetHorizontal.Click
+        SetHorizontal.Checked = True
+        SetVertical.Checked = False
+        SplitContainer2.Orientation = Orientation.Horizontal
+    End Sub
+
+    Private Sub SetVertical_Click(sender As Object, e As EventArgs) Handles SetVertical.Click
+        SetHorizontal.Checked = False
+        SetVertical.Checked = True
+        SplitContainer2.Orientation = Orientation.Vertical
+    End Sub
+
+    Private Sub aggTree_DragEnter(sender As Object, e As DragEventArgs) Handles aggTree.DragEnter
+        e.Effect = DragDropEffects.Move
+    End Sub
+
+    Private Sub aggTree_DragDrop(sender As Object, e As DragEventArgs) Handles aggTree.DragDrop
+        Dim destNode As TreeNode = aggTree.GetNodeAt(aggTree.PointToClient(New Point(e.X, e.Y)))
+        aggTree.SelectedNode = destNode
+        Dim cNode As TreeNode = destNode
+        Dim aid = CDec(e.Data.GetData(DataFormats.Text).ToString)
+        Dim cRow = (From c In entity.ALLTASKS Where c.AT_ID = aid Select c).First()
+        For i As Integer = destNode.Level To 0 Step -1
+
+            Dim atType As Type = cRow.GetType()
+            Dim login As String = IUSR.GETLOGIN()
+            Dim propName = (From c In entity.UI_TASKS Where c.LOGIN = login And c.ORD = cNode.Level Select c.COL).First()
+            If propName.Equals("PRODUCT", StringComparison.OrdinalIgnoreCase) Then
+                MsgBox("Нельзя переместить в другой продукт, не выбрав блок")
+                cNode = cNode.Parent
+                Continue For
+            End If
+            Dim pInfo As Reflection.PropertyInfo = atType.GetProperty(propName)
+            Dim pType As Type = pInfo.PropertyType
+            If pInfo IsNot Nothing Then
+                pInfo.SetValue(cRow, CTypeDynamic(cNode.Name, pType))
+            End If
+
+
+            cNode = cNode.Parent
+        Next
+        'cRow.EMPLOYEE = 372
+        'MsgBox(PERSON.GETPERSONNAME(cRow.EMPLOYEE, 0))
+        'entity.SaveChanges()
     End Sub
 End Class

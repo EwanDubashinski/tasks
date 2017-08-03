@@ -15,6 +15,7 @@
     Public WithEvents bt As New Button
 
     Public Sub New(ByVal width As Integer, ByVal header As String, ByVal h2 As String, ByVal h3 As String, ByVal text As String, ByVal id As Integer, ByVal Optional active As Boolean = True)
+        InitializeComponent()
         init(width)
 
         Me.header.Text = header
@@ -25,7 +26,8 @@
         tt.SetToolTip(Me.header, header)
         Me.h3.Text = h3
         setStatus(active)
-
+        Me.ContextMenuStrip = ContextMenuStrip1
+        Me.header.ContextMenuStrip = ContextMenuStrip1
     End Sub
 
     Sub init(ByVal width As Integer)
@@ -111,7 +113,7 @@
     End Sub
 
 
-    Private Sub TaskItem_Click(sender As Object, e As EventArgs) Handles Me.MouseDown
+    Private Sub TaskItem_Click(sender As Object, e As MouseEventArgs) Handles Me.MouseDown
         If selected Then
             selected = False
             CType(Parent, taskslistpanel).SelectedItem = Nothing
@@ -119,10 +121,15 @@
             selected = True
         End If
         setSelected()
+        If e.Button = MouseButtons.Right Then
+            ContextMenuStrip1.Show(MousePosition.X, MousePosition.Y)
+        End If
+        Me.DoDragDrop(id.ToString, DragDropEffects.Move)
     End Sub
 
     Private Sub descr_MouseDown(sender As Object, e As MouseEventArgs) Handles descr.MouseDown
         TaskItem_Click(sender, e)
+
     End Sub
     Private Sub h2_MouseDown(sender As Object, e As MouseEventArgs) Handles h2.MouseDown
         TaskItem_Click(sender, e)
@@ -195,5 +202,25 @@
 
     Private Sub bt_MouseLeave(sender As Object, e As EventArgs) Handles bt.MouseLeave
         highlight2()
+    End Sub
+
+    Private Sub QuestionMenuItem_Click(sender As Object, e As EventArgs) Handles QuestionMenuItem.Click
+        Tasks.setCategory(id, 0)
+    End Sub
+
+    Private Sub IncidentMenuItem_Click(sender As Object, e As EventArgs) Handles IncidentMenuItem.Click
+        Tasks.setCategory(id, 1)
+    End Sub
+
+    Private Sub PlanTaskMenuItem_Click(sender As Object, e As EventArgs) Handles PlanTaskMenuItem.Click
+        Tasks.setCategory(id, 2)
+    End Sub
+
+    Private Sub DevMenuItem_Click(sender As Object, e As EventArgs) Handles DevMenuItem.Click
+        Tasks.setCategory(id, 3)
+    End Sub
+
+    Private Sub OtherMenuItem_Click(sender As Object, e As EventArgs) Handles OtherMenuItem.Click
+        Tasks.setCategory(id, 4)
     End Sub
 End Class

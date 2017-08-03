@@ -25,7 +25,6 @@ Partial Class Tasks
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Tasks))
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
-        Me.aggTree = New ITasks.NTree()
         Me.SplitContainer2 = New System.Windows.Forms.SplitContainer()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -45,7 +44,6 @@ Partial Class Tasks
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.tasksPanel = New ITasks.taskslistpanel()
         Me.Tab = New System.Windows.Forms.TabControl()
         Me.Description = New System.Windows.Forms.TabPage()
         Me.DateTimePicker1 = New System.Windows.Forms.DateTimePicker()
@@ -75,6 +73,13 @@ Partial Class Tasks
         Me.ChangeTaskCloseDate = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.SavetoDB = New System.Windows.Forms.ToolStripButton()
+        Me.renew = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ToolStripDropDownButton1 = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.SetVertical = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SetHorizontal = New System.Windows.Forms.ToolStripMenuItem()
+        Me.aggTree = New ITasks.NTree()
+        Me.tasksPanel = New ITasks.taskslistpanel()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
         Me.SplitContainer1.Panel2.SuspendLayout()
@@ -114,23 +119,6 @@ Partial Class Tasks
         Me.SplitContainer1.SplitterDistance = 362
         Me.SplitContainer1.TabIndex = 8
         '
-        'aggTree
-        '
-        Me.aggTree.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.aggTree.BackColor = System.Drawing.Color.Gray
-        Me.aggTree.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.aggTree.Font = New System.Drawing.Font("Segoe UI Semibold", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.aggTree.ForeColor = System.Drawing.Color.White
-        Me.aggTree.FullRowSelect = True
-        Me.aggTree.ItemHeight = 22
-        Me.aggTree.Location = New System.Drawing.Point(3, 3)
-        Me.aggTree.Name = "aggTree"
-        Me.aggTree.ShowLines = False
-        Me.aggTree.Size = New System.Drawing.Size(354, 553)
-        Me.aggTree.TabIndex = 3
-        '
         'SplitContainer2
         '
         Me.SplitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
@@ -149,7 +137,7 @@ Partial Class Tasks
         '
         Me.SplitContainer2.Panel2.Controls.Add(Me.Tab)
         Me.SplitContainer2.Size = New System.Drawing.Size(764, 561)
-        Me.SplitContainer2.SplitterDistance = 363
+        Me.SplitContainer2.SplitterDistance = 291
         Me.SplitContainer2.TabIndex = 0
         '
         'Panel2
@@ -357,19 +345,6 @@ Partial Class Tasks
         Me.Label6.TabIndex = 0
         Me.Label6.Text = "Закрытие дня - Хулиганят РЕЗЕРВЫ ПО РКО"
         '
-        'tasksPanel
-        '
-        Me.tasksPanel.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.tasksPanel.AutoScroll = True
-        Me.tasksPanel.BackColor = System.Drawing.Color.White
-        Me.tasksPanel.Location = New System.Drawing.Point(3, 3)
-        Me.tasksPanel.Name = "tasksPanel"
-        Me.tasksPanel.SelectedItem = Nothing
-        Me.tasksPanel.Size = New System.Drawing.Size(356, 553)
-        Me.tasksPanel.TabIndex = 0
-        '
         'Tab
         '
         Me.Tab.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -384,7 +359,7 @@ Partial Class Tasks
         Me.Tab.Location = New System.Drawing.Point(3, 3)
         Me.Tab.Name = "Tab"
         Me.Tab.SelectedIndex = 0
-        Me.Tab.Size = New System.Drawing.Size(388, 553)
+        Me.Tab.Size = New System.Drawing.Size(460, 553)
         Me.Tab.SizeMode = System.Windows.Forms.TabSizeMode.Fixed
         Me.Tab.TabIndex = 0
         '
@@ -403,7 +378,7 @@ Partial Class Tasks
         Me.Description.Location = New System.Drawing.Point(4, 29)
         Me.Description.Name = "Description"
         Me.Description.Padding = New System.Windows.Forms.Padding(3)
-        Me.Description.Size = New System.Drawing.Size(380, 520)
+        Me.Description.Size = New System.Drawing.Size(452, 520)
         Me.Description.TabIndex = 0
         Me.Description.Text = "Описание"
         '
@@ -421,9 +396,9 @@ Partial Class Tasks
         '
         Me.getTask.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.getTask.Location = New System.Drawing.Point(267, 493)
+        Me.getTask.Location = New System.Drawing.Point(267, 497)
         Me.getTask.Name = "getTask"
-        Me.getTask.Size = New System.Drawing.Size(111, 26)
+        Me.getTask.Size = New System.Drawing.Size(185, 26)
         Me.getTask.TabIndex = 8
         Me.getTask.Text = "Назначить"
         Me.getTask.UseVisualStyleBackColor = True
@@ -437,7 +412,7 @@ Partial Class Tasks
         Me.taskText.Multiline = True
         Me.taskText.Name = "taskText"
         Me.taskText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.taskText.Size = New System.Drawing.Size(378, 377)
+        Me.taskText.Size = New System.Drawing.Size(452, 381)
         Me.taskText.TabIndex = 7
         '
         'taskManager
@@ -447,7 +422,7 @@ Partial Class Tasks
         Me.taskManager.AutoEllipsis = True
         Me.taskManager.AutoSize = True
         Me.taskManager.Font = New System.Drawing.Font("Segoe UI", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.taskManager.Location = New System.Drawing.Point(6, 498)
+        Me.taskManager.Location = New System.Drawing.Point(6, 502)
         Me.taskManager.Name = "taskManager"
         Me.taskManager.Size = New System.Drawing.Size(262, 19)
         Me.taskManager.TabIndex = 6
@@ -460,7 +435,7 @@ Partial Class Tasks
         Me.taskState.AutoEllipsis = True
         Me.taskState.Location = New System.Drawing.Point(0, 74)
         Me.taskState.Name = "taskState"
-        Me.taskState.Size = New System.Drawing.Size(381, 30)
+        Me.taskState.Size = New System.Drawing.Size(455, 30)
         Me.taskState.TabIndex = 5
         Me.taskState.Text = "Необходимо выполнить до конца дня"
         Me.taskState.UseVisualStyleBackColor = True
@@ -485,7 +460,7 @@ Partial Class Tasks
         Me.taskHeader.ForeColor = System.Drawing.Color.White
         Me.taskHeader.Location = New System.Drawing.Point(0, 46)
         Me.taskHeader.Name = "taskHeader"
-        Me.taskHeader.Size = New System.Drawing.Size(381, 30)
+        Me.taskHeader.Size = New System.Drawing.Size(455, 30)
         Me.taskHeader.TabIndex = 2
         Me.taskHeader.Text = "Очень страшно обновляться! Все время ошибки!"
         '
@@ -497,7 +472,7 @@ Partial Class Tasks
         Me.taskCustomer.Font = New System.Drawing.Font("Segoe UI Semibold", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.taskCustomer.Location = New System.Drawing.Point(53, 22)
         Me.taskCustomer.Name = "taskCustomer"
-        Me.taskCustomer.Size = New System.Drawing.Size(328, 19)
+        Me.taskCustomer.Size = New System.Drawing.Size(402, 19)
         Me.taskCustomer.TabIndex = 2
         Me.taskCustomer.Text = "Михаил Ключко, СитиИнвест Банк"
         '
@@ -509,7 +484,7 @@ Partial Class Tasks
         Me.taskDate.Font = New System.Drawing.Font("Segoe UI", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
         Me.taskDate.Location = New System.Drawing.Point(54, 6)
         Me.taskDate.Name = "taskDate"
-        Me.taskDate.Size = New System.Drawing.Size(324, 19)
+        Me.taskDate.Size = New System.Drawing.Size(398, 19)
         Me.taskDate.TabIndex = 1
         Me.taskDate.Text = "Вторник, 10 июля 2016 15:30"
         '
@@ -520,7 +495,7 @@ Partial Class Tasks
         Me.Works.Location = New System.Drawing.Point(4, 29)
         Me.Works.Name = "Works"
         Me.Works.Padding = New System.Windows.Forms.Padding(3)
-        Me.Works.Size = New System.Drawing.Size(379, 518)
+        Me.Works.Size = New System.Drawing.Size(452, 520)
         Me.Works.TabIndex = 1
         Me.Works.Text = "Работы"
         Me.Works.UseVisualStyleBackColor = True
@@ -550,7 +525,7 @@ Partial Class Tasks
         Me.Post.AutoScroll = True
         Me.Post.Location = New System.Drawing.Point(4, 29)
         Me.Post.Name = "Post"
-        Me.Post.Size = New System.Drawing.Size(380, 520)
+        Me.Post.Size = New System.Drawing.Size(452, 520)
         Me.Post.TabIndex = 2
         Me.Post.Text = "Письма"
         Me.Post.UseVisualStyleBackColor = True
@@ -560,7 +535,7 @@ Partial Class Tasks
         Me.files.Location = New System.Drawing.Point(4, 29)
         Me.files.Name = "files"
         Me.files.Padding = New System.Windows.Forms.Padding(3)
-        Me.files.Size = New System.Drawing.Size(379, 518)
+        Me.files.Size = New System.Drawing.Size(452, 520)
         Me.files.TabIndex = 3
         Me.files.Text = "Файлы"
         Me.files.UseVisualStyleBackColor = True
@@ -649,7 +624,7 @@ Partial Class Tasks
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SavetoDB})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SavetoDB, Me.renew, Me.ToolStripSeparator1, Me.ToolStripDropDownButton1})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(1154, 25)
@@ -664,6 +639,75 @@ Partial Class Tasks
         Me.SavetoDB.Name = "SavetoDB"
         Me.SavetoDB.Size = New System.Drawing.Size(23, 22)
         Me.SavetoDB.Text = "Save"
+        '
+        'renew
+        '
+        Me.renew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.renew.Image = Global.ITasks.My.Resources.Resources.Restart_6322
+        Me.renew.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.renew.Name = "renew"
+        Me.renew.Size = New System.Drawing.Size(23, 22)
+        Me.renew.Text = "ToolStripButton1"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 25)
+        '
+        'ToolStripDropDownButton1
+        '
+        Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SetVertical, Me.SetHorizontal})
+        Me.ToolStripDropDownButton1.Image = Global.ITasks.My.Resources.Resources.view
+        Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
+        Me.ToolStripDropDownButton1.Size = New System.Drawing.Size(29, 22)
+        Me.ToolStripDropDownButton1.Text = "ToolStripDropDownButton1"
+        '
+        'SetVertical
+        '
+        Me.SetVertical.Checked = True
+        Me.SetVertical.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.SetVertical.Name = "SetVertical"
+        Me.SetVertical.Size = New System.Drawing.Size(158, 22)
+        Me.SetVertical.Text = "Вертикально"
+        '
+        'SetHorizontal
+        '
+        Me.SetHorizontal.Name = "SetHorizontal"
+        Me.SetHorizontal.Size = New System.Drawing.Size(158, 22)
+        Me.SetHorizontal.Text = "Горизонтально"
+        '
+        'aggTree
+        '
+        Me.aggTree.AllowDrop = True
+        Me.aggTree.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.aggTree.BackColor = System.Drawing.Color.Gray
+        Me.aggTree.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.aggTree.Font = New System.Drawing.Font("Segoe UI Semibold", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.aggTree.ForeColor = System.Drawing.Color.White
+        Me.aggTree.FullRowSelect = True
+        Me.aggTree.ItemHeight = 22
+        Me.aggTree.Location = New System.Drawing.Point(3, 3)
+        Me.aggTree.Name = "aggTree"
+        Me.aggTree.ShowLines = False
+        Me.aggTree.Size = New System.Drawing.Size(354, 553)
+        Me.aggTree.TabIndex = 3
+        '
+        'tasksPanel
+        '
+        Me.tasksPanel.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tasksPanel.AutoScroll = True
+        Me.tasksPanel.BackColor = System.Drawing.Color.White
+        Me.tasksPanel.Location = New System.Drawing.Point(3, 3)
+        Me.tasksPanel.Name = "tasksPanel"
+        Me.tasksPanel.SelectedItem = Nothing
+        Me.tasksPanel.Size = New System.Drawing.Size(284, 553)
+        Me.tasksPanel.TabIndex = 0
         '
         'Tasks
         '
@@ -756,4 +800,9 @@ Partial Class Tasks
     Friend WithEvents OpenTask As ToolStripMenuItem
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents SavetoDB As ToolStripButton
+    Friend WithEvents renew As ToolStripButton
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents ToolStripDropDownButton1 As ToolStripDropDownButton
+    Friend WithEvents SetVertical As ToolStripMenuItem
+    Friend WithEvents SetHorizontal As ToolStripMenuItem
 End Class
